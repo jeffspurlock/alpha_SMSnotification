@@ -2,11 +2,13 @@ let AWS = require('aws-sdk');
 const sns = new AWS.SNS();
 
 exports.handler = function (event, context, callback) {
+    console.log("Sending message", event['message'], "to receiver", event['receiver']);
+
     let receiver = event['receiver'];
     let sender = event['sender'];
     let message = event['message'];
 
-    console.log("Sending message", message, "to receiver", receiver);
+
 
     sns.publish({
         Message: message,
