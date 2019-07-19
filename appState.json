@@ -1,0 +1,120 @@
+{
+  "EDITOR_STATE": {
+    "allProjectFiles": {
+      "43a83a94-0b1d-4c8c-a0d2-598a7e7db181": {
+        "id": "43a83a94-0b1d-4c8c-a0d2-598a7e7db181",
+        "parent": null,
+        "name": "alpha_SMSnotification",
+        "type": "DIRECTORY",
+        "isDirectory": true,
+        "children": [
+          "8cd55055-9522-431c-ad11-979c107bcf24"
+        ],
+        "isRemovable": false,
+        "filePath": "alpha_SMSnotification"
+      },
+      "8cd55055-9522-431c-ad11-979c107bcf24": {
+        "id": "8cd55055-9522-431c-ad11-979c107bcf24",
+        "parent": "43a83a94-0b1d-4c8c-a0d2-598a7e7db181",
+        "name": "lambda.js",
+        "type": "JS_LAMBDA",
+        "isDirectory": false,
+        "children": [],
+        "isRemovable": true,
+        "filePath": "alpha_SMSnotification/lambda.js",
+        "code": "let AWS = require('aws-sdk');\nconst sns = new AWS.SNS();\n\nexports.handler = function (event, context, callback) {\n    let receiver = event['receiver'];\n    let sender = event['sender'];\n    let message = event['message'];\n\n    console.log(\"Sending message\", message, \"to receiver\", receiver);\n    sns.publish({\n        Message: message,\n        MessageAttributes: {\n            'AWS.SNS.SMS.SMSType': {\n                'DataType': 'String',\n                'StringValue': 'Transactional'\n            },\n            'AWS.SNS.SMS.SenderID': {\n                'DataType': 'String',\n                'StringValue': sender\n            }\n        },\n        PhoneNumber: receiver\n    }).promise()\n        .then(data => {\n            console.log(\"Sent message to\", receiver);\n\t\t\tcallback(null, data);\n        })\n        .catch(err => {\n            console.log(\"Sending failed\", err);\n\t\t\tcallback(err);\n        });\n\n    callback(null, 'Successfully executed');\n}",
+        "config": {
+          "runtime": "nodejs8.10",
+          "handler": "handler",
+          "timeout": 60,
+          "memory": 128,
+          "layers": []
+        },
+        "triggers": [
+          {
+            "resourceName": "apigusWest2SMSGatewaysendSMSpost",
+            "config": {}
+          }
+        ]
+      }
+    },
+    "deletedFiles": [],
+    "rootNode": "43a83a94-0b1d-4c8c-a0d2-598a7e7db181",
+    "openFiles": [
+      "8cd55055-9522-431c-ad11-979c107bcf24"
+    ],
+    "currentFileId": "8cd55055-9522-431c-ad11-979c107bcf24",
+    "resources": {
+      "apigusWest2SMSGatewaysendSMSpost": {
+        "name": "apigusWest2SMSGatewaysendSMSpost",
+        "type": "API_GATEWAY",
+        "config": {
+          "selectedRegion": "us-west-2",
+          "apiMode": 0,
+          "apiName": "SMSGateway",
+          "endpointType": "EDGE",
+          "resourceMode": 0,
+          "resourceName": "sendSMS",
+          "resourcePath": "/sendSMS",
+          "restMethod": "POST",
+          "proxyIntegration": false,
+          "enableCORS": false,
+          "stageMode": 0,
+          "stageName": "Prod",
+          "mode": 0
+        }
+      },
+      "snsDirectSMSResource": {
+        "name": "snsDirectSMSResource",
+        "type": "SNS",
+        "config": {
+          "snsType": 1,
+          "numbers": [
+            "@{receiver}"
+          ]
+        }
+      }
+    },
+    "customTemplate": {
+      "dialect": null,
+      "definitions": {}
+    },
+    "envVariables": [
+      {
+        "lambdaId": "all",
+        "varKey": "SIGMA_AWS_ACC_ID",
+        "varValue": null,
+        "shouldPersist": false,
+        "displayOnly": false,
+        "editable": false
+      }
+    ],
+    "packageJSON": {
+      "dependencies": {
+        "aws-sdk": {
+          "name": "aws-sdk",
+          "language": "javascript",
+          "version": "2.176.0",
+          "dev": true,
+          "notRemovable": false
+        }
+      }
+    }
+  },
+  "PROJECT_META": {
+    "projectName": "alpha_SMSnotification",
+    "projectDescription": "SNS Service for sending status notifications on the Alpha Reporter module. ",
+    "projectVersion": "1.0.0",
+    "projectRegion": "us-west-2",
+    "platform": "AWS",
+    "platformRegions": {},
+    "lastSave": 1563555280069
+  },
+  "VCS_STATE": {
+    "provider": "GitHub",
+    "repo": {
+      "name": "alpha_SMSnotification",
+      "url": "https://github.com/jeffspurlock/alpha_SMSnotification"
+    }
+  }
+}
